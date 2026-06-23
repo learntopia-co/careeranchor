@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경력의 닻 직업가치관 검사</title>
+    <!-- Tailwind CSS (Bento UI 및 반응형 구현) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Pretendard Font (깔끔한 한글 타이포그래피) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f5f5f7; /* Apple style subtle gray */
+            color: #1d1d1f;
+        }
+        
+        .bento-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+        
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.4s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            transform: scale(1.02);
+        }
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 커스텀 라디오/선택 디자인 */
+        .score-1 { @apply bg-rose-50 text-rose-700 hover:bg-rose-100 hover:border-rose-200 border-2 border-transparent; }
+        .score-2 { @apply bg-orange-50 text-orange-700 hover:bg-orange-100 hover:border-orange-200 border-2 border-transparent; }
+        .score-3 { @apply bg-gray-50 text-gray-700 hover:bg-gray-100 hover:border-gray-200 border-2 border-transparent; }
+        .score-4 { @apply bg-blue-50 text-blue-700 hover:bg-blue-100 hover:border-blue-200 border-2 border-transparent; }
+        .score-5 { @apply bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-200 border-2 border-transparent; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8">
+        <div class="w-full max-w-4xl">
+            
+            <!-- 1. 시작 화면 -->
+            <div id="screen-start" class="bento-card p-8 md:p-12 fade-enter grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-4">Career Anchor</span>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight">나만의 경력 나침반,<br>경력의 닻을 찾아보세요.</h1>
+                    <p class="text-gray-500 text-lg mb-8 leading-relaxed">
+                        우리는 모두 일하는 이유와 동기가 다릅니다. 이 검사는 당신이 어떤 가치를 가장 중요하게 생각하며, 어떤 환경에서 최고의 성과를 낼 수 있는지 8가지 유형으로 분석해 드립니다.
+                    </p>
+                    <ul class="space-y-3 mb-8 text-gray-600">
+                        <li><i class="fa-solid fa-clock text-gray-400 mr-2"></i> 총 40문항, 약 5~10분 소요</li>
+                        <li><i class="fa-solid fa-check-circle text-gray-400 mr-2"></i> 평소 자신의 생각에 가장 가까운 것을 선택해 주세요.</li>
+                    </ul>
+                    <button onclick="startTest()" class="w-full md:w-auto px-8 py-4 bg-gray-900 text-white rounded-2xl font-semibold text-lg hover:bg-gray-800 transition-colors shadow-lg">
+                        검사 시작하기 <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+                <div class="hidden md:flex justify-center items-center">
+                    <!-- 장식용 Bento Grid 패턴 -->
+                    <div class="grid grid-cols-2 gap-4 w-full aspect-square">
+                        <div class="bg-blue-50 rounded-3xl p-6 flex flex-col justify-end">
+                            <i class="fa-solid fa-briefcase text-3xl text-blue-300 mb-2"></i>
+                            <div class="h-2 w-12 bg-blue-200 rounded-full mb-1"></div>
+                            <div class="h-2 w-8 bg-blue-200 rounded-full"></div>
+                        </div>
+                        <div class="bg-indigo-50 rounded-3xl p-6 flex flex-col justify-between">
+                            <div class="w-8 h-8 rounded-full bg-indigo-200"></div>
+                            <div class="text-indigo-300 font-bold text-xl">Balance</div>
+                        </div>
+                        <div class="bg-emerald-50 rounded-3xl col-span-2 p-6 flex items-center justify-between">
+                            <div>
+                                <div class="h-3 w-20 bg-emerald-200 rounded-full mb-2"></div>
+                                <div class="h-2 w-32 bg-emerald-100 rounded-full"></div>
+                            </div>
+                            <i class="fa-solid fa-compass text-4xl text-emerald-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 검사 진행 화면 -->
+            <div id="screen-test" class="hidden h-full">
+                <div class="bento-card p-6 md:p-10 min-h-[500px] flex flex-col justify-between fade-enter">
+                    
+                    <!-- 상단 네비게이션 & 진행률 -->
+                    <div class="flex justify-between items-center mb-10">
+                        <button onclick="prevQuestion()" id="btn-prev" class="text-gray-400 hover:text-gray-800 font-medium transition-colors flex items-center">
+                            <i class="fa-solid fa-chevron-left mr-2"></i> 이전
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 md:w-48 h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div id="progress-bar" class="h-full bg-gray-800 rounded-full transition-all duration-300 w-0"></div>
+                            </div>
+                            <span id="progress-text" class="text-sm font-bold text-gray-500 min-w-[3ch]">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- 문항 영역 -->
+                    <div class="flex-grow flex flex-col justify-center mb-12">
+                        <span class="text-blue-600 font-bold mb-4 tracking-wider text-sm" id="question-number">Q. 1 / 40</span>
+                        <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-gray-800 leading-snug break-keep">
+                            문항 내용이 여기에 표시됩니다.
+                        </h2>
+                    </div>
+
+                    <!-- 선택지 버튼 -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <button onclick="selectAnswer(1)" class="option-btn score-1 py-4 px-2 rounded-2xl font-semibold flex flex-col items-center justify-center gap-1">
+                            <span class="text-xl">1</span>
+                            <span class="text-xs opacity-70">전혀 그렇지 않다</span>
+                        </button>
+                        <button onclick="selectAnswer(2)" class="option-btn score-2 py-4 px-2 rounded-2xl font-semibold flex flex-col items-center justify-center gap-1">
+                            <span class="text-xl">2</span>
+                            <span class="text-xs opacity-70">다소 그렇지 않다</span>
+                        </button>
+                        <button onclick="selectAnswer(3)" class="option-btn score-3 py-4 px-2 rounded-2xl font-semibold flex flex-col items-center justify-center gap-1">
+                            <span class="text-xl">3</span>
+                            <span class="text-xs opacity-70">보통이다</span>
+                        </button>
+                        <button onclick="selectAnswer(4)" class="option-btn score-4 py-4 px-2 rounded-2xl font-semibold flex flex-col items-center justify-center gap-1">
+                            <span class="text-xl">4</span>
+                            <span class="text-xs opacity-70">다소 그렇다</span>
+                        </button>
+                        <button onclick="selectAnswer(5)" class="option-btn score-5 py-4 px-2 rounded-2xl font-semibold flex flex-col items-center justify-center gap-1">
+                            <span class="text-xl">5</span>
+                            <span class="text-xs opacity-70">매우 그렇다</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 결과 화면 (Bento Grid Layout) -->
+            <div id="screen-result" class="hidden">
+                <div class="text-center mb-8 fade-enter">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">당신의 경력 닻 검사 결과</h2>
+                    <p class="text-gray-500">직업을 선택하고 유지할 때 가장 중요하게 생각하는 가치입니다.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-enter">
+                    <!-- 메인 결과 카드 -->
+                    <div class="bento-card col-span-1 md:col-span-2 p-8 bg-gray-900 text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-8 opacity-10">
+                            <i class="fa-solid fa-anchor text-9xl"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold mb-4 backdrop-blur-sm">Primary Anchor</span>
+                            <h3 id="result-title" class="text-4xl font-bold mb-4">전문성 추구형</h3>
+                            <p id="result-desc" class="text-gray-300 text-lg leading-relaxed mb-8">
+                                설명이 여기에 들어갑니다.
+                            </p>
+                            <div class="bg-white/10 rounded-2xl p-5 border border-white/10">
+                                <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">기대 보상 및 동기부여 방법</h4>
+                                <p id="result-reward" class="text-white">보상 내용이 여기에 들어갑니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 점수 요약 카드 -->
+                    <div class="bento-card p-6 col-span-1 flex flex-col">
+                        <h4 class="font-bold text-gray-800 mb-4 flex items-center"><i class="fa-solid fa-chart-bar mr-2 text-blue-500"></i> 영역별 밸런스</h4>
+                        <div id="score-chart" class="flex-grow flex flex-col justify-center space-y-4">
+                            <!-- JS로 동적 생성됨 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center fade-enter">
+                    <button onclick="resetTest()" class="px-6 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-sm">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> 검사 다시하기
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="py-6 text-center text-sm text-gray-400 font-medium">
+        © 2026 LEARNTOPIA. All Rights Rights Reserved.
+    </footer>
+
+    <script>
+        // 1. 데이터 정의
+        const questions = [
+            "한 분야에서 남다른 전문성을 키워 그것을 바탕으로 남에게 조언해 줄 수 있기를 꿈꾼다.",
+            "나는 다른 사람들을 통솔하는 리더로서 일할 수 있을 때 성취감을 느낀다.",
+            "나는 내 방식과 스케줄에 따라 일할 수 있는 충분한 재량권이 있는 일자리를 꿈꾼다.",
+            "내 직업의 안정성과 고용의 장기적 보장이 독립성과 자율성 보다 더 중요하다.",
+            "나는 언제나 내 사업을 시작 할 수 있는 아이디어 구상을 한다.",
+            "나는 사회에 실질적인 기여를 했다고 느낄 수 있을 때, 내 일에서 성공했다고 느낀다.",
+            "나는 매우 도전적인 상황에서 해결책을 제시하거나 문제를 해결 할 수 있는 직업을 꿈꾼다.",
+            "나는 개인적인 일이나 가족과 관련된 일에 지장을 초래하는 업무를 맡게 되면 차라리 직장을 옮기는 것을 택하겠다.",
+            "나는 기술적, 기능적인 능력을 최고의 수준으로 올려놓아야만 성공했다고 느낄 것이다.",
+            "나는 거대한 조직의 책임자가 되어 많은 사람들에게 영향력을 행사하는 결정을 내리는 것을 꿈꾼다.",
+            "나는 업무 내용, 절차 등을 탄력적(자율적)으로 정할 수 있을 때 만족감을 느낀다.",
+            "나는 기존 업무분야를 위협하는 새로운 업무를 (조직 내에서) 받아들이기 보다는 직장을 옮기겠다.",
+            "다른 사람의 회사에서 최고 경영자의 위치에 오르기 보다는 내 자신의 사업을 키워 나가는 것이 더욱 중요하다.",
+            "나는 나의 재능을 다른 사람을 위해 사용할 때, 업무에서 성취감을 만끽한다.",
+            "나는 대단히 어려운 도전에 직면하여 그것을 극복 할 때, 업무에서 성취감을 맛 볼 수 있다.",
+            "나는 개인, 가족 그리고 업무를 조화롭게 수행할 수 있는 직업을 꿈꾼다.",
+            "한 특정 분야의 전문가가 되는 것이 일반 관리자가 되는 것 보다 더 중요하다.",
+            "나는 한 부서(조직)의 총괄 관리자가 될 수 있을 때, 성취감을 느낄 수 있다.",
+            "나는 업무에서 독립성과 상당한 자율성을 보장 받을 수 있을 때, 성취감을 느낄 수 있다.",
+            "나는 안전성과 안정성이 보장된 조직에서 일하고 싶다.",
+            "내 자신의 아이디어와 노력의 결과로 무엇인가를 만들 수 있을 때 성취감을 만끽한다.",
+            "더 나은 세상을 만들기 위해 나의 기술을 활용하는 것이 고위 관리직에 있는 것 보다 더 중요하다.",
+            "나는 해결하기 힘들어 보이는 문제를 해결하고 불가능 해 보이는 것을 가능케 했을 때 성취감을 만끽한다.",
+            "나는 개인, 가족 그리고 일에 있어서 필요한 조직이 균형을 유지 할 수 있을 때 인생에서 성공했다고 느낀다.",
+            "내 전문 분야를 단념케 하는 업무를 맡게 된다면 차라리 직장을 옮기는 쪽을 선택할 것이다.",
+            "특정 분야에 정통한 전문가가 되기보다는 총괄관리자가 되는 것을 더 좋아한다.",
+            "나는 규칙이나 제약에 얽매이지 않고 내 방식대로 일 할 수 있는 기회를 가지는 것이 직업적 안정성 보다 더 중요하다.",
+            "나는 재정적으로, 직업적으로 완벽한 안정감을 가질 때, 성취감을 느낀다.",
+            "내 스스로가 제안한 아이디어나 생각으로 무엇인가를 개발하거나 만들어 냈을 때, 성취감을 느낀다.",
+            "나는 인류와 사회에 실질적으로 기여할 수 있는 직업을 갖기를 꿈꾼다.",
+            "나는 나의 문제해결 능력이나 경쟁력 있는 기술을 요구하는 도전적인 업무를 추구한다.",
+            "최고경영자(전문경영인)가 되기보다는 개인적 삶과 직업 생활을 균형 있게 유지하는 것이 더 중요하다.",
+            "나는 나의 고유한 재능과 기술을 사용할 수 있을 때, 가장 직업적인 성취감을 느낀다.",
+            "나는 총괄관리자(최고 경영자)가 될 수 있는 경력에서 벗어나는 업무를 맡을 바에야 차라리 직장을 떠나겠다.",
+            "나는 자율과 자유가 줄어드는 업무를 수행하는 것 보다는 직장을 옮기는 편이 낫다고 생각한다.",
+            "나는 직업 안정감과 고용 안정성을 느낄 수 있는 직업 갖기를 꿈꾼다.",
+            "나는 언젠가는 내 사업체를 운영하는 것을 꿈꾼다.",
+            "나는 남에게 봉사할 수 없는 업무를 맡을 바에는 차라리 직장을 떠나겠다.",
+            "고위 관리자로 지시하는 것보다 현업을 통해 해결하기 어려운 문제와 씨름하는 것을 더 선호한다.",
+            "나는 언제든 개인이나 가족 문제에 지장을 주지 않는 직업을 찾으려고 최대한 노력한다."
+        ];
+
+        // 8가지 유형 데이터
+        const anchorTypes = [
+            { id: 0, name: "전문성 추구형", desc: "특정 일에 흥미와 재능을 보이며, 한 분야의 전문가로 성장하기를 원합니다. 대체로 기능과 기술을 경력의 원천으로 삼으며 일반 관리자가 되는 것을 선호하지 않습니다.", reward: "기술 수준별 임금 차등화 및 전문직을 위한 독립적인 경력경로 마련" },
+            { id: 1, name: "리더십 추구형", desc: "조직을 이끄는 총괄 관리자를 선호하며, 경영과 정책 결정에 관심이 많습니다. 한 분야에 국한되는 것을 '경력의 덫'으로 인식하고 수직 상승을 추구합니다.", reward: "상사의 인정, 고속 승진의 기회, 높은 수준의 보수와 책임감 부여" },
+            { id: 2, name: "자율성 추구형", desc: "간섭받지 않고 독자적으로 일하기를 원합니다. 조직 내의 엄격한 관리 제도나 규율에 대해 거부감을 느끼며 자유를 최우선으로 여깁니다.", reward: "실적에 따른 성과급, 카페테리아식 복리후생, 유연근무제 등 자율성 보장" },
+            { id: 3, name: "안정성 추구형", desc: "안정되고 예측 가능한 업무를 선호합니다. 직업적 안정성과 고용의 지속성이 경력을 결정하는 데 지배적으로 작용합니다.", reward: "연공기준 보수체계, 충성심에 기초한 인정 및 정년보장 제도 중시" },
+            { id: 4, name: "경제력(창업) 추구형", desc: "자신만의 새로운 제품이나 서비스, 사업을 창출하는 것에 관심이 많습니다. 경제적인 성공과 자기 사업 운영에 대한 강한 욕구가 있습니다.", reward: "사업 구축과 신장에 대한 기회 제공, 획기적인 재산 축적(지분 등) 기회" },
+            { id: 5, name: "봉사 추구형", desc: "세상을 더 나은 곳으로 변화시키려는 열망이 큽니다. 높은 지위나 중요한 업무가 아니더라도 인류나 사회에 기여한다는 일치감을 통해 만족합니다.", reward: "영향력 있는 지위로 승진, 주변 동료 및 조직과 가치를 공유할 수 있는 환경" },
+            { id: 6, name: "도전 추구형", desc: "호기심, 도전, 다양성을 추구합니다. 불가능해 보이는 문제를 해결하거나 장애를 극복하며 더 높은 도전적인 과제를 찾아 나섭니다.", reward: "새롭고 어려운 도전 기회의 지속적인 제공, 문제 해결에 대한 확실한 보상" },
+            { id: 7, name: "삶의 질 추구형", desc: "경력을 삶의 한 영역으로 보고 다른 개인적/가족적 삶과 균형을 맞추려 노력합니다. 개인과 가족의 문제를 배려하는 조직을 선호합니다.", reward: "직원 중시적 조직문화, 출산휴가 등 복지 혜택, 유연한 근무 여건(시간, 장소)" }
+        ];
+
+        // 2. 상태 변수
+        let currentStep = 0; // 0 ~ 39
+        let answers = new Array(40).fill(0); // 0으로 초기화된 40개 공간
+
+        // 3. UI 제어 함수
+        const screenStart = document.getElementById('screen-start');
+        const screenTest = document.getElementById('screen-test');
+        const screenResult = document.getElementById('screen-result');
+        
+        const qNumberEl = document.getElementById('question-number');
+        const qTextEl = document.getElementById('question-text');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const btnPrev = document.getElementById('btn-prev');
+
+        function startTest() {
+            screenStart.classList.add('hidden');
+            screenTest.classList.remove('hidden');
+            
+            // 애니메이션 재설정을 위해 클래스 토글
+            screenTest.firstElementChild.classList.remove('fade-enter');
+            void screenTest.offsetWidth; // trigger reflow
+            screenTest.firstElementChild.classList.add('fade-enter');
+            
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            // 진행률 업데이트
+            const progress = Math.round((currentStep / questions.length) * 100);
+            progressBar.style.width = `${progress}%`;
+            progressText.innerText = `${progress}%`;
+
+            // 문항 업데이트
+            qNumberEl.innerText = `Q. ${currentStep + 1} / ${questions.length}`;
+            qTextEl.innerText = questions[currentStep];
+
+            // 이전 버튼 보이기/숨기기
+            btnPrev.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+        }
+
+        function selectAnswer(score) {
+            answers[currentStep] = score; // 점수 저장
+            
+            if (currentStep < questions.length - 1) {
+                // 부드러운 전환 효과를 위해 카드 내용만 애니메이션 처리
+                const card = screenTest.firstElementChild;
+                card.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    currentStep++;
+                    renderQuestion();
+                    card.style.opacity = '1';
+                }, 150);
+            } else {
+                // 마지막 문항일 경우 결과 도출
+                showResult();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderQuestion();
+            }
+        }
+
+        function showResult() {
+            screenTest.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            // 점수 계산 (각 유형별 문항 배정: i % 8 == 유형 인덱스)
+            let scores = [0, 0, 0, 0, 0, 0, 0, 0];
+            for (let i = 0; i < answers.length; i++) {
+                let typeIndex = i % 8;
+                scores[typeIndex] += answers[i];
+            }
+
+            // 가장 높은 점수 찾기
+            let maxScore = Math.max(...scores);
+            let topTypeIndex = scores.indexOf(maxScore);
+            let topType = anchorTypes[topTypeIndex];
+
+            // 메인 결과 출력
+            document.getElementById('result-title').innerText = topType.name;
+            document.getElementById('result-desc').innerText = topType.desc;
+            document.getElementById('result-reward').innerText = topType.reward;
+
+            // 미니 차트 생성
+            const chartContainer = document.getElementById('score-chart');
+            chartContainer.innerHTML = ''; // 초기화
+            
+            // 만점 기준 (각 유형별 5문항 * 5점 = 25점)
+            const MAX_POSSIBLE = 25; 
+
+            anchorTypes.forEach((type, index) => {
+                const score = scores[index];
+                const widthPercent = (score / MAX_POSSIBLE) * 100;
+                const isTop = index === topTypeIndex;
+                
+                const barHtml = `
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span class="${isTop ? 'text-gray-900 font-bold' : 'text-gray-500'}">${type.name}</span>
+                            <span class="${isTop ? 'text-blue-600 font-bold' : 'text-gray-400'}">${score}점</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full ${isTop ? 'bg-blue-600' : 'bg-gray-300'} rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+                `;
+                chartContainer.insertAdjacentHTML('beforeend', barHtml);
+                
+                // 애니메이션 효과
+                setTimeout(() => {
+                    chartContainer.lastElementChild.querySelector('.bg-blue-600, .bg-gray-300').style.width = `${widthPercent}%`;
+                }, 100);
+            });
+        }
+
+        function resetTest() {
+            currentStep = 0;
+            answers.fill(0);
+            screenResult.classList.add('hidden');
+            screenStart.classList.remove('hidden');
+            
+            progressBar.style.width = '0%';
+            progressText.innerText = '0%';
+        }
+    </script>
+</body>
+</html>
